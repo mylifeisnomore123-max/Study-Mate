@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<title>StudyMate — পড়ার রুটিন ও টাইমার</title>
+<title>StudyMate — পড়ার টাইমার</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#B33A3A">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,7 +32,7 @@
     color:var(--ink);
     -webkit-font-smoothing:antialiased;
   }
-  h1,h2,h3,.brand,.tab-label{font-family:'Baloo Da 2','Hind Siliguri',sans-serif;}
+  h1,h2,h3,.brand{font-family:'Baloo Da 2','Hind Siliguri',sans-serif;}
   .mono{font-family:'JetBrains Mono', monospace;}
 
   .page{
@@ -98,23 +98,26 @@
   .auth-toggle{text-align:center; margin-top:14px;}
   .auth-error{color:var(--margin-red); font-size:13px; margin-top:8px; min-height:16px;}
 
-  nav.tabs{
-    display:flex; gap:6px; margin: 6px 0 20px;
-    border-bottom:1px solid #ddd8c8;
+  .section-heading{
+    display:flex; align-items:center; gap:10px; margin: 26px 0 12px;
   }
-  nav.tabs button{
-    background:none; border:none; cursor:pointer; padding:8px 4px 12px;
-    font-family:'Baloo Da 2',sans-serif; font-weight:600; font-size:15px;
-    color:var(--ink-soft); position:relative; margin-right:14px;
+  .sticky-timer{
+    position:sticky; top:0; z-index:30;
+    background:var(--paper); margin-left:-44px; margin-right:-20px;
+    padding:0 20px 8px 44px; border-bottom:1px solid #ddd8c8;
   }
-  nav.tabs button.active{color:var(--ink);}
-  nav.tabs button.active::after{
-    content:""; position:absolute; left:0; right:0; bottom:-1px; height:3px;
-    background:var(--margin-red); border-radius:3px;
+  .section-heading .num{
+    width:26px; height:26px; border-radius:50%; background:var(--margin-red); color:white;
+    font-family:'JetBrains Mono',monospace; font-weight:700; font-size:13px;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
   }
-
-  .view{display:none;}
-  .view.active{display:block;}
+  .section-heading h2{margin:0; font-size:19px;}
+  .section-heading .streak-badge{
+    margin-left:auto; background:var(--amber-soft); color:var(--amber);
+    font-weight:800; font-size:12.5px; padding:5px 10px; border-radius:20px;
+    display:flex; align-items:center; gap:4px; white-space:nowrap;
+  }
+  .section:first-of-type .section-heading{margin-top:0;}
 
   .card{
     background:var(--white); border-radius:14px; padding:20px;
@@ -122,6 +125,17 @@
     margin-bottom:16px;
   }
   .card h2{margin:0 0 14px; font-size:18px;}
+  .card h3{margin:0 0 10px; font-size:15px;}
+
+  /* daily target */
+  .target-row{display:flex; align-items:center; gap:8px; margin-bottom:8px;}
+  .target-row input{width:70px; padding:7px 9px; border-radius:8px; border:1.5px solid #ddd8c8; font-family:'JetBrains Mono',monospace; text-align:center;}
+  .target-row button{width:auto; padding:7px 12px; font-size:12.5px;}
+  .target-row span{font-size:13px; color:var(--ink-soft);}
+  .target-progress-label{display:flex; justify-content:space-between; font-size:12.5px; color:var(--ink-soft); margin-bottom:5px;}
+  .target-track{height:12px; background:var(--paper-2); border-radius:7px; overflow:hidden; margin-bottom:16px;}
+  .target-fill{height:100%; background:var(--green); border-radius:7px; transition:width .4s ease;}
+  .target-fill.reached{background:var(--amber);}
 
   .timer-wrap{display:flex; flex-direction:column; align-items:center; padding:8px 0 4px;}
   .duration-row{display:flex; gap:10px; width:100%; margin-bottom:14px;}
@@ -148,8 +162,6 @@
   .timer-controls .btn{flex:1; min-width:100px;}
   .btn-secondary{background:var(--paper-2); color:var(--ink);}
   .btn-secondary:hover{background:#e2ddc9;}
-  .btn-add{background:var(--green-soft); color:var(--green);}
-  .btn-add:hover{background:#d5e6dd;}
   .btn-stopsave{background:var(--amber-soft); color:var(--amber);}
 
   .tally-row{display:flex; align-items:center; gap:10px; margin-top:18px; flex-wrap:wrap;}
@@ -158,33 +170,30 @@
   .tally-group{display:flex; align-items:flex-end; position:relative; width:26px; height:22px;}
   .tally-group svg line{stroke:var(--margin-red); stroke-width:2.4; stroke-linecap:round;}
 
-  .routine-item{
-    display:flex; align-items:center; gap:12px; padding:12px 0;
+  .subject-item{
+    display:flex; align-items:center; gap:12px; padding:10px 0;
     border-bottom:1px dashed #ddd8c8;
   }
-  .routine-item:last-child{border-bottom:none;}
-  .routine-time{
-    font-family:'JetBrains Mono',monospace; font-weight:700; font-size:12.5px;
-    background:var(--paper-2); padding:6px 8px; border-radius:7px; min-width:92px; text-align:center;
-    line-height:1.5;
-  }
-  .routine-info{flex:1;}
-  .routine-subject{font-weight:700; font-size:15px;}
-  .routine-days{font-size:12px; color:var(--ink-soft); margin-top:2px;}
-  .routine-del{background:none;border:none;color:var(--ink-soft);cursor:pointer;font-size:18px; padding:4px 6px;}
-  .routine-del:hover{color:var(--margin-red);}
+  .subject-item:last-child{border-bottom:none;}
+  .subject-item .subject-name{flex:1; font-weight:700; font-size:15px;}
+  .subject-del{background:none;border:none;color:var(--ink-soft);cursor:pointer;font-size:18px; padding:4px 6px;}
+  .subject-del:hover{color:var(--margin-red);}
   .empty-note{color:var(--ink-soft); font-size:14px; padding:10px 0;}
+  .add-subject-row{display:flex; gap:8px;}
+  .add-subject-row input{flex:1;}
+  .add-subject-row button{width:auto; white-space:nowrap;}
 
-  .time-range-label{font-size:13px;color:var(--ink-soft);font-weight:700; margin:10px 0 4px;}
-  .form-row{display:flex; gap:10px;}
-  .form-row .field{flex:1;}
-  .day-picker{display:flex; gap:6px; flex-wrap:wrap; margin-top:6px;}
-  .day-chip{
-    padding:6px 10px; border-radius:20px; border:1.5px solid #ddd8c8;
-    font-size:12px; cursor:pointer; background:var(--white); user-select:none;
-    font-weight:600; color:var(--ink-soft);
+  .range-controls{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;}
+  .range-btn{
+    padding:8px 14px; border-radius:20px; border:1.5px solid #ddd8c8;
+    background:var(--white); color:var(--ink-soft); font-weight:700; font-size:13px;
+    cursor:pointer; font-family:'Hind Siliguri',sans-serif;
   }
-  .day-chip.on{background:var(--margin-red); border-color:var(--margin-red); color:white;}
+  .range-btn.active{background:var(--margin-red); border-color:var(--margin-red); color:white;}
+  .custom-range{display:flex; gap:8px; align-items:center; margin-bottom:16px;}
+  .custom-range input{width:70px; padding:8px 10px; border-radius:8px; border:1.5px solid #ddd8c8; font-family:'JetBrains Mono',monospace; text-align:center;}
+  .custom-range button{width:auto; padding:8px 14px; font-size:13px;}
+  .range-label{font-size:13px; color:var(--ink-soft); font-weight:600; margin-bottom:10px;}
 
   .stat-total{display:flex; align-items:baseline; gap:10px; margin-bottom:16px;}
   .stat-total .num{font-family:'JetBrains Mono',monospace; font-size:34px; font-weight:700;}
@@ -194,15 +203,34 @@
   .bar-track{height:10px; background:var(--paper-2); border-radius:6px; overflow:hidden;}
   .bar-fill{height:100%; background:var(--green); border-radius:6px;}
 
-  .notif-banner{
-    background:var(--amber-soft); border:1px solid var(--amber);
-    border-radius:10px; padding:12px 14px; font-size:13px; margin-bottom:16px;
-    display:flex; justify-content:space-between; align-items:center; gap:10px;
+  /* heatmap */
+  .heatmap-grid{display:flex; flex-wrap:wrap; gap:4px; margin-bottom:6px;}
+  .heat-cell{
+    width:13.5%; aspect-ratio:1/1; border-radius:4px; background:var(--paper-2);
+    cursor:default;
   }
-  .notif-banner button{
-    background:var(--amber); border:none; color:white; padding:7px 12px;
-    border-radius:7px; font-weight:700; font-size:12px; cursor:pointer; white-space:nowrap;
+  .heat-cell.lvl-1{background:#cfe3d6;}
+  .heat-cell.lvl-2{background:#9ecab0;}
+  .heat-cell.lvl-3{background:#5fa07f;}
+  .heat-cell.lvl-4{background:var(--green);}
+  .heatmap-legend{display:flex; align-items:center; gap:5px; font-size:11.5px; color:var(--ink-soft); margin-top:6px;}
+  .heatmap-legend .heat-cell{width:12px; aspect-ratio:1/1;}
+
+  /* session history */
+  .history-item{
+    display:flex; align-items:center; gap:10px; padding:10px 0;
+    border-bottom:1px dashed #ddd8c8; font-size:13.5px;
   }
+  .history-item:last-child{border-bottom:none;}
+  .history-date{
+    font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--ink-soft);
+    background:var(--paper-2); padding:4px 7px; border-radius:6px; white-space:nowrap;
+  }
+  .history-info{flex:1;}
+  .history-subject{font-weight:700;}
+  .history-min{font-family:'JetBrains Mono',monospace; font-weight:700; color:var(--green); white-space:nowrap;}
+  .history-del{background:none;border:none;color:var(--ink-soft);cursor:pointer;font-size:16px; padding:2px 4px;}
+  .history-del:hover{color:var(--margin-red);}
 
   .alarm-banner{
     position:fixed; top:0; left:0; right:0; z-index:80;
@@ -242,7 +270,7 @@
 <div id="auth-screen">
   <div class="auth-card">
     <h1>StudyMate</h1>
-    <p class="sub">তোমার পড়াশোনার রুটিন, টাইমার আর হিসাব — এক জায়গায়।</p>
+    <p class="sub">তোমার পড়াশোনার টাইমার আর হিসাব — এক জায়গায়।</p>
     <div id="login-form">
       <div class="field"><label>ইমেইল</label><input type="email" id="login-email" placeholder="you@example.com"></div>
       <div class="field"><label>পাসওয়ার্ড</label><input type="password" id="login-pass" placeholder="••••••••"></div>
@@ -267,16 +295,22 @@
     <div class="userchip"><span id="user-name-label"></span><button onclick="doLogout()">লগআউট</button></div>
   </header>
 
-  <div id="notif-banner-holder"></div>
-
-  <nav class="tabs">
-    <button class="tab-btn active" data-view="timer">টাইমার</button>
-    <button class="tab-btn" data-view="routine">রুটিন</button>
-    <button class="tab-btn" data-view="stats">পরিসংখ্যান</button>
-  </nav>
-
-  <section class="view active" id="view-timer">
+  <section class="section sticky-timer" id="view-timer">
+    <div class="section-heading">
+      <span class="num">১</span><h2>টাইমার</h2>
+      <span class="streak-badge" id="streak-badge" style="display:none;">🔥 <span id="streak-count">0</span> দিন</span>
+    </div>
     <div class="card">
+      <div class="target-row">
+        <span>দৈনিক টার্গেট:</span>
+        <input type="number" id="target-input" min="1" placeholder="মিনিট">
+        <button class="btn btn-secondary" onclick="saveTarget()">সেট করো</button>
+      </div>
+      <div id="target-progress-holder" style="display:none;">
+        <div class="target-progress-label"><span id="target-progress-text">0 / 0 মিনিট</span><span id="target-progress-pct">0%</span></div>
+        <div class="target-track"><div class="target-fill" id="target-fill" style="width:0%"></div></div>
+      </div>
+
       <div class="timer-wrap">
         <div class="subject-pick">
           <select id="timer-subject"></select>
@@ -307,8 +341,6 @@
           <button class="btn btn-primary" id="btn-startpause" onclick="toggleTimer()">শুরু করো</button>
         </div>
         <div class="timer-controls">
-          <button class="btn btn-add" onclick="addTime(5)">+৫ মিনিট</button>
-          <button class="btn btn-add" onclick="addTime(10)">+১০ মিনিট</button>
           <button class="btn btn-stopsave" onclick="stopAndSave()">সেভ করে শেষ করো</button>
         </div>
         <div class="tally-row">
@@ -319,48 +351,55 @@
     </div>
   </section>
 
-  <section class="view" id="view-routine">
+  <section class="section" id="view-subjects">
+    <div class="section-heading"><span class="num">২</span><h2>বিষয়</h2></div>
     <div class="card">
-      <h2>নতুন রুটিন যোগ করো</h2>
-      <div class="field"><label>বিষয় (Subject)</label><input type="text" id="rt-subject" placeholder="যেমনঃ পদার্থবিজ্ঞান"></div>
-
-      <div class="time-range-label">কখন থেকে</div>
-      <div class="form-row">
-        <div class="field"><label>ঘণ্টা</label><select id="rt-start-hour"></select></div>
-        <div class="field"><label>মিনিট</label>
-          <select id="rt-start-min"><option value="00">00</option><option value="15">15</option><option value="30">30</option><option value="45">45</option></select>
-        </div>
-        <div class="field"><label>AM/PM</label><select id="rt-start-ampm"><option value="AM">AM</option><option value="PM">PM</option></select></div>
+      <div class="add-subject-row">
+        <input type="text" id="new-subject-input" placeholder="নতুন বিষয়ের নাম">
+        <button class="btn btn-primary" onclick="addSubject()">যোগ করো</button>
       </div>
-
-      <div class="time-range-label">কখন পর্যন্ত</div>
-      <div class="form-row">
-        <div class="field"><label>ঘণ্টা</label><select id="rt-end-hour"></select></div>
-        <div class="field"><label>মিনিট</label>
-          <select id="rt-end-min"><option value="00">00</option><option value="15">15</option><option value="30">30</option><option value="45">45</option></select>
-        </div>
-        <div class="field"><label>AM/PM</label><select id="rt-end-ampm"><option value="AM">AM</option><option value="PM">PM</option></select></div>
-      </div>
-
-      <label style="font-size:13px;color:var(--ink-soft);font-weight:600;">কোন কোন দিন</label>
-      <div class="day-picker" id="day-picker"></div>
-      <button class="btn btn-primary" style="margin-top:16px;" onclick="addRoutine()">রুটিনে যোগ করো</button>
-    </div>
-    <div class="card">
-      <h2>তোমার রুটিন</h2>
-      <p style="font-size:12.5px;color:var(--ink-soft);margin-top:-6px;">শুরুর সময় হলে আর শেষের সময় হলে — দুই বারই এলার্ম (রিংটোন + নোটিফিকেশন) বাজবে। এর বাইরে রুটিন আর কিছু করবে না।</p>
-      <div id="routine-list"><div class="empty-note">এখনো কোনো রুটিন যোগ করা হয়নি।</div></div>
+      <div id="subject-list" style="margin-top:12px;"><div class="empty-note">এখনো কোনো বিষয় যোগ করা হয়নি।</div></div>
     </div>
   </section>
 
-  <section class="view" id="view-stats">
+  <section class="section" id="view-stats">
+    <div class="section-heading"><span class="num">৩</span><h2>পরিসংখ্যান</h2></div>
+
     <div class="card">
-      <h2>আজকের পড়াশোনা</h2>
+      <h3>গত ৩০ দিন</h3>
+      <div class="heatmap-grid" id="heatmap-grid"></div>
+      <div class="heatmap-legend">
+        <span>কম</span>
+        <div class="heat-cell"></div><div class="heat-cell lvl-1"></div><div class="heat-cell lvl-2"></div><div class="heat-cell lvl-3"></div><div class="heat-cell lvl-4"></div>
+        <span>বেশি</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="range-controls">
+        <button class="range-btn" data-days="1" onclick="loadStats(1)">আজ</button>
+        <button class="range-btn" data-days="2" onclick="loadStats(2)">২ দিন</button>
+        <button class="range-btn" data-days="3" onclick="loadStats(3)">৩ দিন</button>
+        <button class="range-btn" data-days="7" onclick="loadStats(7)">সপ্তাহ</button>
+        <button class="range-btn" data-days="30" onclick="loadStats(30)">মাস</button>
+      </div>
+      <div class="custom-range">
+        <span style="font-size:13px;color:var(--ink-soft);">শেষ</span>
+        <input type="number" id="custom-days-input" min="1" value="5">
+        <span style="font-size:13px;color:var(--ink-soft);">দিন</span>
+        <button class="btn btn-secondary" onclick="loadCustomDays()">দেখাও</button>
+      </div>
+      <div class="range-label" id="range-label">আজকের হিসাব</div>
       <div class="stat-total">
         <span class="num mono" id="stat-total-min">0</span>
         <span class="unit">মিনিট মোট</span>
       </div>
-      <div id="stat-bars"><div class="empty-note">আজ এখনো কোনো ফোকাস সেশন শেষ হয়নি।</div></div>
+      <div id="stat-bars"><div class="empty-note">এই সময়ে এখনো কোনো ফোকাস সেশন শেষ হয়নি।</div></div>
+    </div>
+
+    <div class="card">
+      <h3>সেশন হিস্টোরি</h3>
+      <div id="session-history"><div class="empty-note">এই সময়ে কোনো সেশন নেই।</div></div>
     </div>
   </section>
 </div>
@@ -375,9 +414,8 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   getFirestore, doc, setDoc, addDoc, collection, deleteDoc,
-  query, where, onSnapshot, serverTimestamp
+  query, where, onSnapshot, serverTimestamp, increment
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDbnONzsvSa4nb8_K47cs10N0Gv5MK1DZc",
@@ -389,16 +427,19 @@ const firebaseConfig = {
   measurementId: "G-3D2G9YW55Y"
 };
 
-const VAPID_KEY = "BOKPwIfI3e51-3ezxApui8W8eOjglQZUJK5IpoVAdQhJacJJe0QCmcHp_nXUkDz1gGs0qniHmHgTHmD4FKpnG3s";
-
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
 let currentUser = null;
 let subjectsCache = [];
-let routineCache = [];
-let routineUnsub = null, sessionsUnsub = null;
+let sessionsUnsub = null;
+let studyDaysUnsub = null;
+let userDocUnsub = null;
+let currentRangeDays = 1;
+let dailyTargetMin = null;
+let targetCelebratedFor = null; // dateStr for which celebration toast already fired
+let studyDaysMap = {}; // dateStr -> totalMin
 
 /* ---------- AUTH ---------- */
 window.toggleAuth = function(which){
@@ -458,140 +499,212 @@ onAuthStateChanged(auth, (user) => {
     document.getElementById('auth-screen').style.display = 'none';
     document.getElementById('app-page').style.display = 'block';
     document.getElementById('user-name-label').textContent = user.displayName || user.email;
-    startListeners(user.uid);
-    setupNotifications();
+    startSubjectListener(user.uid);
+    startUserDocListener(user.uid);
+    startStudyDaysListener(user.uid);
+    loadStats(1);
   } else {
     document.getElementById('auth-screen').style.display = 'block';
     document.getElementById('app-page').style.display = 'none';
-    if(routineUnsub) routineUnsub();
     if(sessionsUnsub) sessionsUnsub();
+    if(studyDaysUnsub) studyDaysUnsub();
+    if(userDocUnsub) userDocUnsub();
   }
 });
 
-/* ---------- TABS ---------- */
-document.querySelectorAll('.tab-btn').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('view-' + btn.dataset.view).classList.add('active');
-  });
-});
-
-/* ---------- ROUTINE FORM SETUP ---------- */
-function fillHourSelect(sel){
-  for(let h=1; h<=12; h++){
-    const opt = document.createElement('option');
-    opt.value = String(h).padStart(2,'0');
-    opt.textContent = String(h).padStart(2,'0');
-    sel.appendChild(opt);
-  }
-}
-fillHourSelect(document.getElementById('rt-start-hour'));
-fillHourSelect(document.getElementById('rt-end-hour'));
-
-const DAYS = [
-  {k:'sat', l:'শনি'}, {k:'sun', l:'রবি'}, {k:'mon', l:'সোম'},
-  {k:'tue', l:'মঙ্গল'}, {k:'wed', l:'বুধ'}, {k:'thu', l:'বৃহঃ'}, {k:'fri', l:'শুক্র'}
-];
-const JS_DAY_KEYS = ['sun','mon','tue','wed','thu','fri','sat']; // matches Date.getDay() order
-
-const dayPicker = document.getElementById('day-picker');
-const selectedDays = new Set();
-DAYS.forEach(d=>{
-  const chip = document.createElement('div');
-  chip.className = 'day-chip';
-  chip.textContent = d.l;
-  chip.dataset.key = d.k;
-  chip.onclick = ()=>{
-    chip.classList.toggle('on');
-    if(selectedDays.has(d.k)) selectedDays.delete(d.k); else selectedDays.add(d.k);
-  };
-  dayPicker.appendChild(chip);
-});
-
-window.addRoutine = async function(){
-  const subject = document.getElementById('rt-subject').value.trim();
-  const startHour = document.getElementById('rt-start-hour').value;
-  const startMin = document.getElementById('rt-start-min').value;
-  const startAmpm = document.getElementById('rt-start-ampm').value;
-  const endHour = document.getElementById('rt-end-hour').value;
-  const endMin = document.getElementById('rt-end-min').value;
-  const endAmpm = document.getElementById('rt-end-ampm').value;
-  if(!subject){ showToast('বিষয়ের নাম দাও।'); return; }
-  if(selectedDays.size === 0){ showToast('কমপক্ষে একটা দিন বেছে নাও।'); return; }
-  await addDoc(collection(db, 'users', currentUser.uid, 'routine'), {
-    subject, startHour, startMin, startAmpm, endHour, endMin, endAmpm,
-    days: Array.from(selectedDays), createdAt: serverTimestamp()
-  });
-  document.getElementById('rt-subject').value = '';
-  selectedDays.clear();
-  document.querySelectorAll('.day-chip').forEach(c=>c.classList.remove('on'));
-  showToast('রুটিনে যোগ হয়েছে।');
-};
-
-window.deleteRoutine = async function(id){
-  await deleteDoc(doc(db, 'users', currentUser.uid, 'routine', id));
-};
-
-/* ---------- LISTENERS ---------- */
-function startListeners(uid){
-  const routineQ = collection(db, 'users', uid, 'routine');
-  routineUnsub = onSnapshot(routineQ, (snap)=>{
+/* ---------- SUBJECTS ---------- */
+function startSubjectListener(uid){
+  const subQ = collection(db, 'users', uid, 'subjects');
+  onSnapshot(subQ, (snap)=>{
     const items = [];
     snap.forEach(d=> items.push({ id: d.id, ...d.data() }));
-    routineCache = items;
-    renderRoutineList(items);
-    subjectsCache = Array.from(new Set(items.map(i=>i.subject)));
-    if(subjectsCache.length === 0) subjectsCache = ['সাধারণ পড়াশোনা'];
-    renderSubjectSelect();
-  });
-
-  const todayStr = dateStr(new Date());
-  const sessQ = query(collection(db, 'users', uid, 'sessions'), where('dateStr', '==', todayStr));
-  sessionsUnsub = onSnapshot(sessQ, (snap)=>{
-    const sessions = [];
-    snap.forEach(d=> sessions.push(d.data()));
-    renderStats(sessions);
-    renderTally(sessions);
+    subjectsCache = items;
+    renderSubjectList(items);
+    renderSubjectSelect(items);
   });
 }
 
-function renderRoutineList(items){
-  const holder = document.getElementById('routine-list');
+window.addSubject = async function(){
+  const input = document.getElementById('new-subject-input');
+  const name = input.value.trim();
+  if(!name){ showToast('বিষয়ের নাম লেখো।'); return; }
+  await addDoc(collection(db, 'users', currentUser.uid, 'subjects'), { name, createdAt: serverTimestamp() });
+  input.value = '';
+};
+
+window.deleteSubject = async function(id){
+  await deleteDoc(doc(db, 'users', currentUser.uid, 'subjects', id));
+};
+
+function renderSubjectList(items){
+  const holder = document.getElementById('subject-list');
   if(items.length === 0){
-    holder.innerHTML = '<div class="empty-note">এখনো কোনো রুটিন যোগ করা হয়নি।</div>';
+    holder.innerHTML = '<div class="empty-note">এখনো কোনো বিষয় যোগ করা হয়নি।</div>';
     return;
   }
-  items.sort((a,b)=> (a.startAmpm+a.startHour+a.startMin).localeCompare(b.startAmpm+b.startHour+b.startMin));
   holder.innerHTML = '';
   items.forEach(it=>{
     const row = document.createElement('div');
-    row.className = 'routine-item';
-    const dayLabels = it.days.map(k => DAYS.find(d=>d.k===k)?.l || k).join(', ');
+    row.className = 'subject-item';
     row.innerHTML = `
-      <div class="routine-time">${it.startHour}:${it.startMin} ${it.startAmpm}<br>– ${it.endHour}:${it.endMin} ${it.endAmpm}</div>
-      <div class="routine-info">
-        <div class="routine-subject">${escapeHtml(it.subject)}</div>
-        <div class="routine-days">${escapeHtml(dayLabels)}</div>
-      </div>
-      <button class="routine-del" onclick="deleteRoutine('${it.id}')">✕</button>
+      <span class="subject-name">${escapeHtml(it.name)}</span>
+      <button class="subject-del" onclick="deleteSubject('${it.id}')">✕</button>
     `;
     holder.appendChild(row);
   });
 }
 
-function renderSubjectSelect(){
+function renderSubjectSelect(items){
   const sel = document.getElementById('timer-subject');
   const prev = sel.value;
   sel.innerHTML = '';
-  subjectsCache.forEach(s=>{
+  const names = items.length ? items.map(i=>i.name) : ['সাধারণ পড়াশোনা'];
+  names.forEach(name=>{
     const opt = document.createElement('option');
-    opt.value = s; opt.textContent = s;
+    opt.value = name; opt.textContent = name;
     sel.appendChild(opt);
   });
-  if(subjectsCache.includes(prev)) sel.value = prev;
+  if(names.includes(prev)) sel.value = prev;
 }
+
+/* ---------- DAILY TARGET ---------- */
+function startUserDocListener(uid){
+  userDocUnsub = onSnapshot(doc(db, 'users', uid), (snap)=>{
+    const data = snap.data() || {};
+    dailyTargetMin = data.dailyTargetMin || null;
+    document.getElementById('target-input').value = dailyTargetMin || '';
+    updateTargetProgress();
+  });
+}
+
+window.saveTarget = async function(){
+  const val = Math.max(1, parseInt(document.getElementById('target-input').value) || 0);
+  if(!val){ showToast('একটা সংখ্যা দাও।'); return; }
+  await setDoc(doc(db, 'users', currentUser.uid), { dailyTargetMin: val }, { merge: true });
+  showToast('টার্গেট সেট হয়েছে।');
+};
+
+function updateTargetProgress(){
+  const holder = document.getElementById('target-progress-holder');
+  if(!dailyTargetMin){ holder.style.display = 'none'; return; }
+  holder.style.display = 'block';
+  const todayStr = dateStr(new Date());
+  const todayMin = studyDaysMap[todayStr] || 0;
+  const pct = Math.min(100, Math.round((todayMin / dailyTargetMin) * 100));
+  document.getElementById('target-progress-text').textContent = `${todayMin} / ${dailyTargetMin} মিনিট`;
+  document.getElementById('target-progress-pct').textContent = `${pct}%`;
+  const fill = document.getElementById('target-fill');
+  fill.style.width = pct + '%';
+  fill.classList.toggle('reached', pct >= 100);
+
+  if(pct >= 100 && targetCelebratedFor !== todayStr){
+    targetCelebratedFor = todayStr;
+    showToast('🎉 আজকের টার্গেট পূরণ হয়েছে!');
+  }
+}
+
+/* ---------- STUDY DAYS (heatmap + streak + target source) ---------- */
+function startStudyDaysListener(uid){
+  const start = new Date();
+  start.setDate(start.getDate() - 34);
+  const startStr = dateStr(start);
+  const sdQ = query(collection(db, 'users', uid, 'studyDays'), where('date', '>=', startStr));
+  studyDaysUnsub = onSnapshot(sdQ, (snap)=>{
+    studyDaysMap = {};
+    snap.forEach(d=>{
+      const data = d.data();
+      studyDaysMap[data.date] = data.totalMin || 0;
+    });
+    renderHeatmap();
+    renderStreak();
+    updateTargetProgress();
+  });
+}
+
+function renderHeatmap(){
+  const holder = document.getElementById('heatmap-grid');
+  holder.innerHTML = '';
+  const days = [];
+  for(let i = 29; i >= 0; i--){
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    days.push(d);
+  }
+  days.forEach(d=>{
+    const ds = dateStr(d);
+    const min = studyDaysMap[ds] || 0;
+    const cell = document.createElement('div');
+    cell.className = 'heat-cell ' + heatLevel(min);
+    cell.title = `${ds}: ${min} মিনিট`;
+    holder.appendChild(cell);
+  });
+}
+
+function heatLevel(min){
+  if(min <= 0) return '';
+  if(min < 30) return 'lvl-1';
+  if(min < 60) return 'lvl-2';
+  if(min < 120) return 'lvl-3';
+  return 'lvl-4';
+}
+
+function renderStreak(){
+  const badge = document.getElementById('streak-badge');
+  const countEl = document.getElementById('streak-count');
+  let streak = 0;
+  const cursor = new Date();
+  if(!(studyDaysMap[dateStr(cursor)] > 0)){
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  while(studyDaysMap[dateStr(cursor)] > 0){
+    streak++;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  if(streak > 0){
+    badge.style.display = 'flex';
+    countEl.textContent = streak;
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+/* ---------- STATS (flexible date range) + SESSION HISTORY ---------- */
+function dateStr(d){
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
+const RANGE_LABELS = { 1:'আজকের হিসাব', 2:'শেষ ২ দিনের হিসাব', 3:'শেষ ৩ দিনের হিসাব', 7:'এই সপ্তাহের হিসাব', 30:'এই মাসের হিসাব' };
+
+window.loadStats = function(days){
+  currentRangeDays = days;
+  document.querySelectorAll('.range-btn').forEach(b=> b.classList.toggle('active', parseInt(b.dataset.days) === days));
+  document.getElementById('range-label').textContent = RANGE_LABELS[days] || `শেষ ${days} দিনের হিসাব`;
+
+  const end = new Date();
+  const start = new Date();
+  start.setDate(start.getDate() - (days - 1));
+  const startStr = dateStr(start), endStr = dateStr(end);
+
+  if(sessionsUnsub) sessionsUnsub();
+  const sessQ = query(
+    collection(db, 'users', currentUser.uid, 'sessions'),
+    where('dateStr', '>=', startStr),
+    where('dateStr', '<=', endStr)
+  );
+  sessionsUnsub = onSnapshot(sessQ, (snap)=>{
+    const sessions = [];
+    snap.forEach(d=> sessions.push({ id: d.id, ...d.data() }));
+    renderStats(sessions);
+    renderHistory(sessions);
+    if(days === 1) renderTally(sessions);
+  });
+};
+
+window.loadCustomDays = function(){
+  const n = Math.max(1, parseInt(document.getElementById('custom-days-input').value) || 1);
+  document.querySelectorAll('.range-btn').forEach(b=> b.classList.remove('active'));
+  loadStats(n);
+};
 
 function renderStats(sessions){
   const totalMin = sessions.reduce((sum,s)=> sum + (s.durationMin||0), 0);
@@ -603,7 +716,7 @@ function renderStats(sessions){
   const holder = document.getElementById('stat-bars');
   const entries = Object.entries(bySubject).sort((a,b)=> b[1]-a[1]);
   if(entries.length === 0){
-    holder.innerHTML = '<div class="empty-note">আজ এখনো কোনো ফোকাস সেশন শেষ হয়নি।</div>';
+    holder.innerHTML = '<div class="empty-note">এই সময়ে এখনো কোনো ফোকাস সেশন শেষ হয়নি।</div>';
     return;
   }
   const max = entries[0][1];
@@ -612,13 +725,49 @@ function renderStats(sessions){
     const row = document.createElement('div');
     row.className = 'bar-row';
     const pct = Math.max(6, Math.round((min/max)*100));
+    const hrs = Math.floor(min/60), mins = min%60;
+    const timeLabel = hrs > 0 ? `${hrs} ঘণ্টা ${mins} মিনিট` : `${mins} মিনিট`;
     row.innerHTML = `
-      <div class="bar-label"><span>${escapeHtml(subj)}</span><span class="mono">${min} মিনিট</span></div>
+      <div class="bar-label"><span>${escapeHtml(subj)}</span><span class="mono">${timeLabel}</span></div>
       <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
     `;
     holder.appendChild(row);
   });
 }
+
+function renderHistory(sessions){
+  const holder = document.getElementById('session-history');
+  const focusSessions = sessions.filter(s=> s.type === 'focus');
+  if(focusSessions.length === 0){
+    holder.innerHTML = '<div class="empty-note">এই সময়ে কোনো সেশন নেই।</div>';
+    return;
+  }
+  focusSessions.sort((a,b)=>{
+    const ta = a.completedAt?.toMillis ? a.completedAt.toMillis() : 0;
+    const tb = b.completedAt?.toMillis ? b.completedAt.toMillis() : 0;
+    return tb - ta;
+  });
+  holder.innerHTML = '';
+  focusSessions.forEach(s=>{
+    const row = document.createElement('div');
+    row.className = 'history-item';
+    row.innerHTML = `
+      <span class="history-date">${s.dateStr}</span>
+      <span class="history-info"><span class="history-subject">${escapeHtml(s.subject)}</span></span>
+      <span class="history-min">${s.durationMin} মিনিট</span>
+      <button class="history-del" onclick="deleteSession('${s.id}','${s.dateStr}',${s.durationMin})">✕</button>
+    `;
+    holder.appendChild(row);
+  });
+}
+
+window.deleteSession = async function(id, ds, durationMin){
+  await deleteDoc(doc(db, 'users', currentUser.uid, 'sessions', id));
+  await setDoc(doc(db, 'users', currentUser.uid, 'studyDays', ds), {
+    date: ds, totalMin: increment(-durationMin)
+  }, { merge: true });
+  showToast('সেশন মুছে ফেলা হয়েছে।');
+};
 
 function renderTally(sessions){
   const count = sessions.filter(s=> s.type === 'focus').length;
@@ -733,12 +882,16 @@ window.resetTimer = function(){
   paintRing();
 };
 
-window.addTime = function(mins){
-  segTotalSec += mins*60;
-  remaining += mins*60;
-  paintRing();
-  showToast(`+${mins} মিনিট যোগ হলো`);
-};
+async function saveSessionAndDay(subject, durationMin){
+  await addDoc(collection(db, 'users', currentUser.uid, 'sessions'), {
+    subject, type: 'focus', durationMin,
+    dateStr: dateStr(new Date()), completedAt: serverTimestamp()
+  });
+  const ds = dateStr(new Date());
+  await setDoc(doc(db, 'users', currentUser.uid, 'studyDays', ds), {
+    date: ds, totalMin: increment(durationMin)
+  }, { merge: true });
+}
 
 window.stopAndSave = async function(){
   const elapsedSec = segTotalSec - remaining;
@@ -746,10 +899,7 @@ window.stopAndSave = async function(){
   stopTimer();
   if(elapsedMin > 0 && mode === 'focus' && currentUser){
     const subject = document.getElementById('timer-subject').value || 'সাধারণ পড়াশোনা';
-    await addDoc(collection(db, 'users', currentUser.uid, 'sessions'), {
-      subject, type: 'focus', durationMin: elapsedMin,
-      dateStr: dateStr(new Date()), completedAt: serverTimestamp()
-    });
+    await saveSessionAndDay(subject, elapsedMin);
     showToast(`${elapsedMin} মিনিট সেভ হলো।`);
   }
   mode = 'focus';
@@ -767,10 +917,7 @@ async function completeSegment(){
   const subject = document.getElementById('timer-subject').value || 'সাধারণ পড়াশোনা';
 
   if(finishedMode === 'focus' && currentUser){
-    await addDoc(collection(db, 'users', currentUser.uid, 'sessions'), {
-      subject, type: 'focus', durationMin: Math.round(finishedSec/60),
-      dateStr: dateStr(new Date()), completedAt: serverTimestamp()
-    });
+    await saveSessionAndDay(subject, Math.round(finishedSec/60));
   }
 
   triggerAlarm(finishedMode === 'focus' ? 'ফোকাস সেশন শেষ! এখন একটু বিরতি নাও।' : 'বিরতি শেষ! আবার ফোকাসে ফিরে আসো।');
@@ -789,9 +936,6 @@ breakInput.addEventListener('change', ()=>{ if(!running && mode==='break'){ segT
 paintRing();
 
 /* ---------- helpers ---------- */
-function dateStr(d){
-  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-}
 function escapeHtml(str){
   const div = document.createElement('div');
   div.textContent = str ?? '';
@@ -806,7 +950,7 @@ function showToast(msg){
   toastTimeout = setTimeout(()=> t.classList.remove('show'), 2600);
 }
 
-/* ---------- ALARM SOUND (ringtone-style beep, synthesized — no external audio file needed) ---------- */
+/* ---------- ALARM SOUND (ringtone-style jingle, synthesized) ---------- */
 let audioCtx = null;
 let alarmLoopHandle = null;
 
@@ -817,31 +961,31 @@ function ensureAudioCtx(){
   if(audioCtx.state === 'suspended'){ audioCtx.resume(); }
   return audioCtx;
 }
-// Unlock audio on first user interaction (browser autoplay policy requirement)
 document.addEventListener('click', ()=>{ ensureAudioCtx(); }, { once:true });
 
-function beepOnce(freq){
+const RING_NOTES = [784, 988, 1175, 988]; // G5, B5, D6, B5
+function playRingtone(){
   const ctx = ensureAudioCtx();
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
-  osc.type = 'square';
-  osc.frequency.value = freq;
-  gain.gain.setValueAtTime(0.0001, ctx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.22, ctx.currentTime + 0.02);
-  gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.22);
-  osc.connect(gain).connect(ctx.destination);
-  osc.start();
-  osc.stop(ctx.currentTime + 0.24);
+  let t = ctx.currentTime;
+  RING_NOTES.forEach((freq)=>{
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(0.3, t + 0.015);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.16);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(t);
+    osc.stop(t + 0.18);
+    t += 0.15;
+  });
 }
 
 function startAlarmSound(){
   stopAlarmSound();
-  let toggle = false;
-  beepOnce(toggle ? 660 : 990);
-  alarmLoopHandle = setInterval(()=>{
-    toggle = !toggle;
-    beepOnce(toggle ? 660 : 990);
-  }, 420);
+  playRingtone();
+  alarmLoopHandle = setInterval(playRingtone, RING_NOTES.length * 150 + 300);
 }
 function stopAlarmSound(){
   if(alarmLoopHandle){ clearInterval(alarmLoopHandle); alarmLoopHandle = null; }
@@ -851,104 +995,20 @@ function triggerAlarm(message){
   document.getElementById('alarm-msg').textContent = message;
   document.getElementById('alarm-banner').classList.add('show');
   startAlarmSound();
-  notifyLocal(message);
+  if('Notification' in window && Notification.permission === 'granted'){
+    try{ new Notification('StudyMate', { body: message }); }catch(e){}
+  }
 }
 window.dismissAlarm = function(){
   document.getElementById('alarm-banner').classList.remove('show');
   stopAlarmSound();
 };
 
-/* ---------- ROUTINE ALARM CHECK (foreground, checks every 20s) ---------- */
-let firedAlarms = new Set();
-setInterval(checkRoutineAlarms, 20000);
-
-function checkRoutineAlarms(){
-  if(!currentUser || routineCache.length === 0) return;
-  const now = new Date();
-  let hour24 = now.getHours();
-  const minute = now.getMinutes();
-  const ampm = hour24 >= 12 ? 'PM' : 'AM';
-  let hour12 = hour24 % 12; if(hour12 === 0) hour12 = 12;
-  const hourStr = String(hour12).padStart(2,'0');
-  const minStr = String(minute - (minute % 15)).padStart(2,'0'); // matches 15-min routine steps
-  const todayKey = JS_DAY_KEYS[now.getDay()];
-  const dayTag = dateStr(now);
-
-  routineCache.forEach(r=>{
-    if(!r.days || !r.days.includes(todayKey)) return;
-
-    if(r.startHour === hourStr && r.startMin === minStr && r.startAmpm === ampm){
-      const key = `${r.id}-start-${dayTag}-${hourStr}${minStr}${ampm}`;
-      if(!firedAlarms.has(key)){
-        firedAlarms.add(key);
-        triggerAlarm(`${r.subject} পড়ার সময় শুরু!`);
-      }
-    }
-    if(r.endHour === hourStr && r.endMin === minStr && r.endAmpm === ampm){
-      const key = `${r.id}-end-${dayTag}-${hourStr}${minStr}${ampm}`;
-      if(!firedAlarms.has(key)){
-        firedAlarms.add(key);
-        triggerAlarm(`${r.subject} এর সময় শেষ!`);
-      }
-    }
+/* ---------- PWA install support ---------- */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js').catch((e)=> console.warn('SW register failed:', e));
   });
-}
-
-/* ---------- NOTIFICATIONS (FCM, background best-effort) ---------- */
-async function setupNotifications(){
-  const banner = document.getElementById('notif-banner-holder');
-  if(!('Notification' in window) || !('serviceWorker' in navigator)){
-    return;
-  }
-  if(Notification.permission === 'granted'){
-    banner.innerHTML = '';
-    registerForPush();
-    return;
-  }
-  if(Notification.permission === 'denied'){
-    banner.innerHTML = `<div class="notif-banner"><span>নোটিফিকেশন বন্ধ আছে — রুটিন অনুযায়ী রিমাইন্ডার পেতে হলে browser settings থেকে চালু করো।</span></div>`;
-    return;
-  }
-  banner.innerHTML = `
-    <div class="notif-banner">
-      <span>রুটিন অনুযায়ী রিমাইন্ডার পেতে নোটিফিকেশন চালু করো।</span>
-      <button id="notif-enable-btn">চালু করো</button>
-    </div>`;
-  document.getElementById('notif-enable-btn').onclick = async ()=>{
-    const perm = await Notification.requestPermission();
-    if(perm === 'granted'){
-      banner.innerHTML = '';
-      registerForPush();
-      showToast('নোটিফিকেশন চালু হয়েছে।');
-    }
-  };
-}
-
-async function registerForPush(){
-  try{
-    const reg = await navigator.serviceWorker.register('firebase-messaging-sw.js');
-    const messaging = getMessaging(app);
-    const token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
-    if(token && currentUser){
-      await setDoc(doc(db, 'users', currentUser.uid, 'fcmTokens', token), {
-        createdAt: serverTimestamp(), ua: navigator.userAgent
-      });
-    }
-    onMessage(messaging, (payload)=>{
-      const title = payload.notification?.title || 'StudyMate';
-      const body = payload.notification?.body || '';
-      triggerAlarm(body || title);
-    });
-  }catch(e){
-    console.warn('Push setup failed (check VAPID key):', e);
-  }
-}
-
-function notifyLocal(body, title){
-  title = title || 'StudyMate';
-  if('Notification' in window && Notification.permission === 'granted'){
-    try{ new Notification(title, { body, icon: 'icon.png' }); }catch(e){}
-  }
 }
 </script>
 </body>
